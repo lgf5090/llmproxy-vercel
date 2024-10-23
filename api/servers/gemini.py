@@ -92,7 +92,7 @@ async def stream_gemini_response(model: str, payload: dict, api_key: str):
                 if match:
                     text_content = match.group(1)
                     # Unescape any escaped characters
-                    text_content = text_content.encode('utf-8').decode('unicode_escape')
+                    text_content = text_content.encode().decode('unicode_escape')
 
                     openai_format = {
                         "id": f"chatcmpl-{int(time.time())}",
