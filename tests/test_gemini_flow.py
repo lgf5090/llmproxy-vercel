@@ -25,7 +25,7 @@ logger.info(f"BASE_URL: {BASE_URL}")
 
 async def make_request(supplier: str, api_key: str, model: str):
     BASE_URL = api_endpoint() + f"/{supplier}"
-    query = "Count from 1 to 5"
+    query = "用汉字从一数到十，如一，二，三，四，五，..."
 
     client = AsyncOpenAI(base_url=BASE_URL, api_key=api_key)
 
@@ -48,31 +48,12 @@ async def make_request(supplier: str, api_key: str, model: str):
         if not content:
             raise ValueError("Received empty content from API")
 
-        for i in range(1, 6):
-            assert str(
-                i) in content, f"Expected {i} in content, but it's missing. Content: {content}"
+        for word in ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"]:
+            assert word in content, f"Expected '{word}' in content, but it's missing. Content: {content}"
 
     except Exception as e:
         print(f"Error occurred: {str(e)}")
         raise
-
-
-@pytest.mark.asyncio
-async def test_openai_streaming():
-    await make_request(
-        supplier="openai",
-        api_key=os.environ["OPENAI_API_KEY"],
-        model="gpt-3.5-turbo"
-    )
-
-
-@pytest.mark.asyncio
-async def test_groq_streaming():
-    await make_request(
-        supplier="groq",
-        api_key=os.environ["GROQ_API_KEY"],
-        model="llama3-70b-8192"
-    )
 
 
 @pytest.mark.asyncio
@@ -81,40 +62,4 @@ async def test_gemini_streaming():
         supplier="gemini",
         api_key=os.environ["GEMINI_API_KEY"],
         model="gemini-1.5-flash"
-    )
-
-
-@pytest.mark.asyncio
-async def test_cerebras_streaming():
-    await make_request(
-        supplier="cerebras",
-        api_key=os.environ["CEREBRAS_API_KEY"],
-        model="llama3.1-8b"
-    )
-
-
-@pytest.mark.asyncio
-async def test_nvidia_streaming():
-    await make_request(
-        supplier="nvidia",
-        api_key=os.environ["NVIDIA_API_KEY"],
-        model="meta/llama-3.2-3b-instruct"
-    )
-
-
-@pytest.mark.asyncio
-async def test_mistral():
-    await make_request(
-        supplier="mistral",
-        api_key=os.environ["MISTRAL_API_KEY"],
-        model="mistral-large-latest",
-    )
-
-
-@pytest.mark.asyncio
-async def test_sambanova():
-    await make_request(
-        supplier="sambanova",
-        api_key=os.environ["SAMBANOVA_API_KEY"],
-        model="Meta-Llama-3.1-405B-Instruct",
     )
